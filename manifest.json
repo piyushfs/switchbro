@@ -1,0 +1,28 @@
+{
+    "name": "SwitchBro",
+    "manifest_version": 3,
+    "version": "1.0.1",
+    "description": "Let's you seamlessly switch between different accounts of a broker",
+    "permissions": [
+        "cookies",
+        "storage",
+        "tabs",
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://*.fyers.in/*",
+        "http://*.fyers.in/*",
+        "http://.fyers.in/",
+        "https://.fyers.in/",
+        "https://*.zerodha.com/*",
+        "http://*.zerodha.com/*",
+        "http://.zerodha.com/",
+        "https://.zerodha.com/"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "icons": {
+        "500": "icon500.png"
+    }
+}
