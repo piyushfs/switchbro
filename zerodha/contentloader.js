@@ -1,9 +1,9 @@
-import { delAllStoredAccountsZerodha, getZerodhaAccountList, delStoredAccountsZerodha, getStoredAccountsZerodha, } from "./zerodha.js"
-import { capitalizeWords, switchUser, reloadOrOpenTab, addAccount } from "../utils.js"
+import { delAllStoredAccounts, getAccountList, delStoredAccounts, getStoredAccounts, clearAccount, reloadOrOpenTab, switchUser } from "./zerodha.js"
+import { capitalizeWords } from "../utils.js"
 
-async function displayZerodhaAccounts() {
+async function displayAccounts() {
 
-    const zerodha_users = await getZerodhaAccountList()
+    const zerodha_users = await getAccountList()
     const ul = document.getElementById('zerodhaData');
     ul.innerHTML = '';
     var headerhtml = `
@@ -66,36 +66,32 @@ async function displayZerodhaAccounts() {
 
 
 document.addEventListener('DOMContentLoaded', async function () {
-
-    // load accounts
-    await displayZerodhaAccounts()
-
+    await displayAccounts()
     const addAccountBtn = document.getElementById('zerodhaData');
     addAccountBtn.addEventListener('click', async function (event) {
-        if (event.target.classList.contains('switchAcc')) {
+        if (event.target.id == 'addAccZerodha') {
+            await clearAccount()
+            reloadOrOpenTab()
+        } else if (event.target.classList.contains('switchAcc')) {
             const userid = event.target.id;
-            const allaccs = await getStoredAccountsZerodha()
+            const allaccs = await getStoredAccounts()
             if (userid in allaccs) {
-                await switchUser(allaccs[userid], "ZERODHA")
+                await switchUser(allaccs[userid])
             }
-            await reloadOrOpenTab('ZERODHA');
-            await displayZerodhaAccounts()
-        } else if (event.target.id == 'addAccZerodha') {
-            await addAccount('ZERODHA')
-            reloadOrOpenTab('ZERODHA')
+            await reloadOrOpenTab();
         } else if (event.target.classList.contains('deleteAcc')) {
             const userid = event.target.id;
-            await delStoredAccountsZerodha(userid)
-            await displayZerodhaAccounts()
+            await delStoredAccounts(userid)
         }
+        await displayAccounts()
     });
 
     const deleteZerodhaAll = document.getElementById('deleteAllZerodha')
     deleteZerodhaAll.addEventListener('click', async function (event) {
-        await delAllStoredAccountsZerodha()
-        await addAccount('ZERODHA')
-        await displayZerodhaAccounts()
-        reloadOrOpenTab('ZERODHA')
+        await delAllStoredAccounts()
+        await clearAccount()
+        await displayAccounts()
+        reloadOrOpenTab()
     });
 });
 
@@ -103,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         if (request.action === "repaintZerodha") {
-            await displayZerodhaAccounts()
+            await displayAccounts()
         }
     }
 );

@@ -37,7 +37,6 @@ export function getCurrentAccount() {
     const domain = ".fyers.in"
     const cookies = chrome.cookies.getAll({ domain });
     return cookies.then(result => {
-        console.log(result, 'cookie')
         var user = {}
         user['broker'] = 'FYERS'
         user['cookies'] = []
@@ -107,7 +106,6 @@ export async function reloadOrOpenTab() {
             const tabIds = [];
             var activeTabId = "";
             for (const item of tabs) {
-                console.log(item, "tab")
                 if (item['url'].includes('trade.fyers.in') || item['url'].includes('login.fyers.in')) {
                     tabIds.push(item.id);
                     chrome.tabs.reload(item.id);

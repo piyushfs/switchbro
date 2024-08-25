@@ -1,6 +1,5 @@
 import * as fyersModule from "./fyers/fyers.js";
-import { switchUser, reloadOrOpenTab } from "./utils.js";
-import { getZerodhaAccountList } from "./zerodha/zerodha.js";
+import * as zerodhaModule from "./zerodha/zerodha.js";
 
 chrome.commands.onCommand.addListener(async (command) => {
     if (command == "switch-up" || command == "switch-down") {
@@ -28,7 +27,7 @@ chrome.commands.onCommand.addListener(async (command) => {
                     }
                 }
             } else if (currtab[0].url.includes('kite.zerodha.com')) {
-                const users = await getZerodhaAccountList()
+                const users = await zerodhaModule.getAccountList()
                 if (users.length > 1) {
                     var activeidx = -1
                     var nextidx = -1
@@ -43,10 +42,8 @@ chrome.commands.onCommand.addListener(async (command) => {
                         } else if (command == "switch-down") {
                             nextidx = activeidx == users.length - 1 ? 0 : activeidx + 1
                         }
-                        console.log(nextidx)
-
-                        await switchUser(users[nextidx], "ZERODHA")
-                        reloadOrOpenTab("ZERODHA")
+                        await zerodhaModule.switchUser(users[nextidx])
+                        zerodhaModule.reloadOrOpenTab()
                         chrome.runtime.sendMessage({ action: "repaintZerodha" });
                     }
                 }

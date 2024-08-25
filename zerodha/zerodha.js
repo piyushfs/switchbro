@@ -1,16 +1,16 @@
 
 
-import { CHROMESTORAGE, combineObjects, getLocalStorageData, executeScriptAsync } from "../utils.js"
+import { CHROMESTORAGE, combineObjects, getLocalStorageData, executeScriptAsync, clearLocalStorageData, setLocalStorageData, deleteCookie } from "../utils.js"
 
 const STORAGE_KEY_ZERODHA = "stored_data_zerodha"
 
 // ----------------------------------------------------------------------------------------------------------------
-export async function getStoredAccountsZerodha() {
+export async function getStoredAccounts() {
     const result = await CHROMESTORAGE.get(STORAGE_KEY_ZERODHA)
     return result
 }
 
-export async function addStoredAccountsZerodha(user) {
+export async function addStoredAccounts(user) {
     const result = await CHROMESTORAGE.get(STORAGE_KEY_ZERODHA)
     if (Object.keys(user).length !== 0) {
         const combined = combineObjects(result, user)
@@ -20,7 +20,7 @@ export async function addStoredAccountsZerodha(user) {
     return result
 }
 
-export async function delStoredAccountsZerodha(user_id) {
+export async function delStoredAccounts(user_id) {
     const result = await CHROMESTORAGE.get(STORAGE_KEY_ZERODHA)
     if (user_id in result) {
         delete result[user_id];
@@ -28,7 +28,7 @@ export async function delStoredAccountsZerodha(user_id) {
     await CHROMESTORAGE.set(STORAGE_KEY_ZERODHA, result)
 }
 
-export async function delAllStoredAccountsZerodha() {
+export async function delAllStoredAccounts() {
     await CHROMESTORAGE.remove(STORAGE_KEY_ZERODHA)
 }
 
@@ -40,7 +40,6 @@ async function getUserName(userid) {
     try {
         while (count < 5) {
             const storeddata = await CHROMESTORAGE.get(STORAGE_KEY_ZERODHA)
-            console.log(storeddata, userid)
             if (userid in storeddata && storeddata[userid]['display_name'] != "") {
                 return storeddata[userid]['display_name']
             }
@@ -74,7 +73,6 @@ export async function getLocalStorageStoredData(userid) {
     }
     var obj = {}
     const storeddata = await CHROMESTORAGE.get(STORAGE_KEY_ZERODHA)
-    console.log(storeddata, userid)
     if (userid in storeddata && storeddata[userid]['localdata'] != undefined && Object.keys(storeddata[userid]['localdata']).length != 0) {
         return storeddata[userid]['localdata']
     }
@@ -93,7 +91,7 @@ export async function getLocalStorageStoredData(userid) {
     return obj
 }
 
-export async function getCurrentAccountZerodha() {
+export async function getCurrentAccount() {
 
 
     const domain = ".zerodha.com"
@@ -133,9 +131,9 @@ export async function getCurrentAccountZerodha() {
 }
 
 
-export async function getZerodhaAccountList() {
-    const curr_user = await getCurrentAccountZerodha()
-    const storedUsers = await addStoredAccountsZerodha(curr_user)
+export async function getAccountList() {
+    const curr_user = await getCurrentAccount()
+    const storedUsers = await addStoredAccounts(curr_user)
     const user_id = Object.keys(curr_user)[0]
     var zerodha_users = []
     Object.keys(storedUsers).forEach(key => {
@@ -147,7 +145,86 @@ export async function getZerodhaAccountList() {
         }
 
     })
-    console.log(zerodha_users, curr_user)
     zerodha_users.sort((a, b) => b['id'] > a['id']);
     return zerodha_users
+}
+
+export async function clearAccount() {
+    const curr_user = await getCurrentAccount()
+    if (Object.keys(curr_user).length !== 0) {
+        var key = Object.keys(curr_user)[0]
+        for (const c of curr_user[key]['cookies']) {
+            await deleteCookie(c);
+        }
+    }
+
+    const tabs = await chrome.tabs.query({});
+    const reqTabs = tabs.filter(tab => tab.url.includes("kite.zerodha.com"));
+    for (const tab of reqTabs) {
+        await executeScriptAsync(tab.id, clearLocalStorageData, []);
+    }
+}
+
+export async function reloadOrOpenTab() {
+    return new Promise((resolve) => {
+        chrome.tabs.query({}, function (tabs) {
+            var reloaded = false;
+            const tabIds = [];
+            var activeTabId = "";
+            for (const item of tabs) {
+                if (item['url'].includes('kite.zerodha.com')) {
+                    tabIds.push(item.id);
+                    chrome.tabs.reload(item.id);
+                    reloaded = true;
+                    if (item.active) {
+                        activeTabId = item.id;
+                    }
+                }
+            }
+            if (!reloaded) {
+                chrome.tabs.create({ url: 'https://kite.zerodha.com' }, (tab) => {
+                    tabIds.push(item.id);
+                });
+            }
+            const listener = function (tabIdUpdated, changeInfo, tab) {
+                if (activeTabId == "") {
+                    if (tabIds.includes(tabIdUpdated) && changeInfo.status === 'complete') {
+                        chrome.tabs.update(tabIdUpdated, { active: true });
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        resolve();
+                    }
+                } else {
+                    if (tabIdUpdated == activeTabId && changeInfo.status === 'complete') {
+                        chrome.tabs.update(tabIdUpdated, { active: true });
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        resolve();
+                    }
+                }
+            };
+            chrome.tabs.onUpdated.addListener(listener);
+        })
+    })
+}
+
+export async function switchUser(user) {
+    const tabs = await chrome.tabs.query({});
+    const reqTabs = tabs.filter(tab => tab.url.includes("kite.zerodha.com"));
+    for (const tab of reqTabs) {
+        await executeScriptAsync(tab.id, clearLocalStorageData, []);
+        await executeScriptAsync(tab.id, setLocalStorageData, [user['localdata']]);
+    }
+    for (const cookie of user['cookies']) {
+        var domain = cookie.domain
+        if (domain.includes('kite.zerodha.com')) {
+            domain = ""
+        }
+        await chrome.cookies.set({
+            url: 'https://kite.zerodha.com',
+            domain: domain,
+            name: cookie.name,
+            value: cookie.value,
+            httpOnly: cookie.httpOnly,
+            secure: cookie.secure
+        })
+    }
 }
