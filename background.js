@@ -1,15 +1,13 @@
-import { getFyersAccountList } from "./fyers/fyers.js";
+import * as fyersModule from "./fyers/fyers.js";
 import { switchUser, reloadOrOpenTab } from "./utils.js";
 import { getZerodhaAccountList } from "./zerodha/zerodha.js";
 
 chrome.commands.onCommand.addListener(async (command) => {
-    console.log(command);
     if (command == "switch-up" || command == "switch-down") {
-        const currtab = await chrome.tabs.query({ active: true, })
-        console.log(currtab)
+        const currtab = await chrome.tabs.query({ active: true })
         if (currtab.length != 0) {
             if (currtab[0].url.includes('trade.fyers.in')) {
-                const users = await getFyersAccountList()
+                const users = await fyersModule.getAccountList()
                 if (users.length > 1) {
                     var activeidx = -1
                     var nextidx = -1
@@ -24,10 +22,8 @@ chrome.commands.onCommand.addListener(async (command) => {
                         } else if (command == "switch-down") {
                             nextidx = activeidx == users.length - 1 ? 0 : activeidx + 1
                         }
-                        console.log(nextidx)
-
-                        await switchUser(users[nextidx], "FYERS")
-                        reloadOrOpenTab("FYERS")
+                        await fyersModule.switchUser(users[nextidx])
+                        fyersModule.reloadOrOpenTab()
                         chrome.runtime.sendMessage({ action: "repaintFyers" });
                     }
                 }

@@ -1,8 +1,8 @@
-import { getStoredAccountsFyers, getFyersAccountList, delAllStoredAccountsFyers, delStoredAccountsFyers, } from "./fyers.js"
-import { capitalizeWords, reloadOrOpenTab, switchUser, addAccount } from "../utils.js"
+import { getStoredAccounts, getAccountList, delAllStoredAccounts, delStoredAccounts, clearAccount, reloadOrOpenTab, switchUser } from "./fyers.js"
+import { capitalizeWords } from "../utils.js"
 
-async function displayFyersAccounts() {
-    const fyers_users = await getFyersAccountList()
+async function displayAccounts() {
+    const fyers_users = await getAccountList()
     const ul = document.getElementById('fyersData');
     ul.innerHTML = '';
     var headerhtml = `
@@ -28,7 +28,7 @@ async function displayFyersAccounts() {
         `
     }
     ul.innerHTML += headerhtml
-    fyers_users.forEach((item, index) => {
+    fyers_users.forEach((item) => {
         var color = "#272727;"
         var txtcolor = "white"
         if (item['active']) {
@@ -63,43 +63,40 @@ async function displayFyersAccounts() {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
-
-    // load accounts
-    await displayFyersAccounts()
-    const addAccountBtn = document.getElementById('fyersData');
-    addAccountBtn.addEventListener('click', async function (event) {
-        if (event.target.classList.contains('switchAcc')) {
+    await displayAccounts()
+    const fyersPanel = document.getElementById('fyersData');
+    fyersPanel.addEventListener('click', async function (event) {
+        if (event.target.id == 'addAccFyers') {
+            await clearAccount()
+            reloadOrOpenTab()
+        }
+        else if (event.target.classList.contains('switchAcc')) {
             const userid = event.target.id;
-            const allaccs = await getStoredAccountsFyers()
-            console.log(allaccs, 'fyers')
+            const allaccs = await getStoredAccounts()
             if (userid in allaccs) {
-                await switchUser(allaccs[userid], "FYERS")
+                await switchUser(allaccs[userid])
             }
-            reloadOrOpenTab('FYERS');
-            await displayFyersAccounts()
-        } else if (event.target.id == 'addAccFyers') {
-            await addAccount('FYERS')
-            reloadOrOpenTab('FYERS')
+            reloadOrOpenTab();
         } else if (event.target.classList.contains('deleteAcc')) {
             const userid = event.target.id;
-            await delStoredAccountsFyers(userid)
-            await displayFyersAccounts()
+            await delStoredAccounts(userid)
         }
+        await displayAccounts()
     });
 
     const deleteFyersAll = document.getElementById('deleteAllFyers')
     deleteFyersAll.addEventListener('click', async function (event) {
-        await delAllStoredAccountsFyers()
-        await addAccount('FYERS')
-        await displayFyersAccounts()
-        reloadOrOpenTab('FYERS')
+        await delAllStoredAccounts()
+        await clearAccount()
+        await displayAccounts()
+        reloadOrOpenTab()
     });
 });
 
 chrome.runtime.onMessage.addListener(
-    async function (request, sender, sendResponse) {
+    async function (request) {
         if (request.action === "repaintFyers") {
-            await displayFyersAccounts();
+            await displayAccounts();
         }
     }
 );

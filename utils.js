@@ -1,4 +1,3 @@
-import { getCurrentAccountFyers } from "./fyers/fyers.js";
 import { getCurrentAccountZerodha } from "./zerodha/zerodha.js";
 
 
@@ -35,16 +34,7 @@ export function combineObjects(obj1, obj2) {
 }
 
 export async function switchUser(user, broker) {
-    if (broker == "FYERS") {
-        for (const cookie of user['cookies']) {
-            await chrome.cookies.set({
-                url: 'https://trade.fyers.in',
-                domain: cookie.domain,
-                name: cookie.name,
-                value: cookie.value
-            })
-        }
-    } else if (broker === "ZERODHA") {
+    if (broker === "ZERODHA") {
         const tabs = await chrome.tabs.query({});
         const reqTabs = tabs.filter(tab => tab.url.includes("kite.zerodha.com"));
         for (const tab of reqTabs) {
@@ -70,25 +60,12 @@ export async function switchUser(user, broker) {
 
 export async function reloadOrOpenTab(broker) {
     return new Promise((resolve) => {
+
         chrome.tabs.query({}, function (tabs) {
             var reloaded = false;
             var tabId;
-
-            if (broker == "FYERS") {
-                for (const item of tabs) {
-                    if (item['url'].includes('trade.fyers.in')) {
-                        tabId = item.id;
-                        chrome.tabs.reload(tabId);
-                        reloaded = true;
-                        break;
-                    }
-                }
-                if (!reloaded) {
-                    chrome.tabs.create({ url: 'https://trade.fyers.in' }, (tab) => {
-                        tabId = tab.id;
-                    });
-                }
-            } else if (broker == "ZERODHA") {
+            var active = true;
+            if (broker == "ZERODHA") {
                 for (const item of tabs) {
                     if (item['url'].includes('kite.zerodha.com')) {
                         tabId = item.id;
@@ -102,21 +79,21 @@ export async function reloadOrOpenTab(broker) {
                         tabId = tab.id;
                     });
                 }
-                const listener = function (tabIdUpdated, changeInfo, tab) {
-                    if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
-                        chrome.tabs.update(tabId, { active: true });
-                        chrome.tabs.onUpdated.removeListener(listener);
-                        resolve();
-                    }
-                };
-
-                chrome.tabs.onUpdated.addListener(listener);
             }
+            const listener = function (tabIdUpdated, changeInfo, tab) {
+                console.log(tabIdUpdated, tabId)
+                if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
+                    chrome.tabs.update(tabId, { active: true });
+                    chrome.tabs.onUpdated.removeListener(listener);
+                    resolve();
+                }
+            };
+            chrome.tabs.onUpdated.addListener(listener);
         })
     })
 }
 
-async function deleteCookie(cookie) {
+export async function deleteCookie(cookie) {
     const protocol = cookie.secure ? 'https:' : 'http:';
     const cookieUrl = `${protocol}//${cookie.domain}${cookie.path}`;
     await chrome.cookies.remove({
@@ -128,15 +105,7 @@ async function deleteCookie(cookie) {
 
 
 export async function addAccount(broker) {
-    if (broker === "FYERS") {
-        const curr_user = await getCurrentAccountFyers()
-        if (Object.keys(curr_user).length !== 0) {
-            var key = Object.keys(curr_user)[0]
-            for (const c of curr_user[key]['cookies']) {
-                await deleteCookie(c);
-            }
-        }
-    } else if (broker === "ZERODHA") {
+    if (broker === "ZERODHA") {
         const curr_user = await getCurrentAccountZerodha()
         if (Object.keys(curr_user).length !== 0) {
             var key = Object.keys(curr_user)[0]
