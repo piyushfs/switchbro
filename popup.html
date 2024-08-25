@@ -40,6 +40,9 @@
         <button type="button" title="Zerodha" id="displayZerodha" class="btn shadow-none"
             style="margin: 0.2em;border-radius:50em;background-color:#272727;"><img src="kite-logo.svg"
                 style="width: 2em;"></button>
+        <button type="button" title="Dhan" id="displayDhan" class="btn shadow-none"
+            style="margin: 0.2em;border-radius:50em;background-color:#272727;"><img src="dhan.png"
+                style="width: 2em;scale: 1.2;"></button>
     </div>
 
     <ol class="list-group" style="padding: 0.5em;display: none;" id="fyersData">
@@ -47,6 +50,9 @@
 
 
     <ol class="list-group" style="padding: 0.5em;display: none;" id="zerodhaData">
+    </ol>
+
+    <ol class="list-group" style="padding: 0.5em;display: none;" id="dhanData">
     </ol>
 
     <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -89,9 +95,31 @@
         </div>
     </div>
 
+    <div class="modal fade" id="dhanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
+                <div class="modal-body">
+                    <span>
+                        Are you sure you want to delete data of all the users?
+                    </span>
+                    <br>
+                    <div style="float: right;">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
+                        <button type="button" id="deleteAllDhan" class="btn btn-primary btn-sm"
+                            data-bs-dismiss="modal">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <script src="common.js" type="module"></script>
     <script src="fyers/contentloader.js" type="module"></script>
     <script src="zerodha/contentloader.js" type="module"></script>
+    <script src="dhan/contentloader.js" type="module"></script>
+
 
 </body>
 
