@@ -1,3 +1,4 @@
+import { getCurrentAccountDhan } from "./dhan/dhan.js";
 import { getCurrentAccountFyers } from "./fyers/fyers.js";
 import { getCurrentAccountZerodha } from "./zerodha/zerodha.js";
 
@@ -65,6 +66,17 @@ export async function switchUser(user, broker) {
                 secure: cookie.secure
             })
         }
+    } else if (broker === "DHAN") {
+        const tabs = await chrome.tabs.query({});
+        const reqTabs = tabs.filter(tab => tab.url.includes("web.dhan.co"));
+        for (const tab of reqTabs) {
+            await executeScriptAsync(tab.id, clearLocalStorageData, []);
+            await executeScriptAsync(tab.id, setLocalStorageData, [{ 'userdata': user['userdata'] }]);
+        }
+        for (const cookie of user['cookies']) {
+            await deleteCookie(cookie)
+        }
+    }
 }
 
 export async function reloadOrOpenTab(broker) {
@@ -101,6 +113,21 @@ export async function reloadOrOpenTab(broker) {
                         tabId = tab.id;
                     });
                 }
+            } else if (broker == "DHAN") {
+                for (const item of tabs) {
+                    if (item['url'].includes('web.dhan.co')) {
+                        tabId = item.id;
+                        chrome.tabs.reload(tabId);
+                        reloaded = true;
+                    }
+                }
+                if (!reloaded) {
+                    chrome.tabs.create({ url: 'https://web.dhan.co' }, (tab) => {
+                        tabId = tab.id;
+                    });
+                }
+            }
+
             const listener = function (tabIdUpdated, changeInfo, tab) {
                 if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
                     chrome.tabs.update(tabId, { active: true });
@@ -149,6 +176,14 @@ export async function addAccount(broker) {
             const results = await executeScriptAsync(tab.id, clearLocalStorageData, []);
             const output = results[0].result;
         }
+    } else if (broker === "DHAN") {
+        const curr_user = await getCurrentAccountDhan()
+        const tabs = await chrome.tabs.query({});
+        const reqTabs = tabs.filter(tab => tab.url.includes("web.dhan.co"));
+        for (const tab of reqTabs) {
+            await executeScriptAsync(tab.id, clearLocalStorageData, []);
+        }
+    }
 }
 
 

@@ -10,9 +10,13 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     const disFyersBtn = document.getElementById('displayFyers');
     const disZerdhaBtn = document.getElementById('displayZerodha');
+    const disDhanBtn = document.getElementById('displayDhan');
+
 
     const disFyersWdw = document.getElementById('fyersData');
     const disZerodhaWdw = document.getElementById('zerodhaData');
+    const disDhanWdw = document.getElementById('dhanData');
+
 
     switch (currbroker) {
         case "FYERS":
@@ -23,6 +27,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             disZerodhaWdw.style.display = 'block';
             disZerdhaBtn.className = 'btn shadow-none brokerbtn';
             break;
+        case "DHAN":
+            disDhanWdw.style.display = 'block';
+            disDhanBtn.className = 'btn shadow-none brokerbtn';
+            break;
     }
 
     disFyersBtn.addEventListener('click', async function (event) {
@@ -31,6 +39,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         disZerodhaWdw.style.display = 'none';
         disZerdhaBtn.className = 'btn shadow-none';
+
+        disDhanWdw.style.display = 'none';
+        disDhanBtn.className = 'btn shadow-none';
 
         await CHROMESTORAGE.set("currentBroker", "FYERS")
     })
@@ -42,7 +53,23 @@ document.addEventListener('DOMContentLoaded', async function () {
         disZerodhaWdw.style.display = 'block';
         disZerdhaBtn.className = 'btn shadow-none brokerbtn';
 
+        disDhanWdw.style.display = 'none';
+        disDhanBtn.className = 'btn shadow-none';
+
         await CHROMESTORAGE.set("currentBroker", "ZERODHA")
+    })
+
+    disDhanBtn.addEventListener('click', async function (event) {
+        disFyersWdw.style.display = 'none';
+        disFyersBtn.className = 'btn shadow-none';
+
+        disZerodhaWdw.style.display = 'none';
+        disZerdhaBtn.className = 'btn shadow-none';
+
+        disDhanWdw.style.display = 'block';
+        disDhanBtn.className = 'btn shadow-none brokerbtn';
+
+        await CHROMESTORAGE.set("currentBroker", "DHAN")
     })
 
 });
