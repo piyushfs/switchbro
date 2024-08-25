@@ -65,6 +65,7 @@ export async function switchUser(user, broker) {
                 secure: cookie.secure
             })
         }
+    }
 }
 
 export async function reloadOrOpenTab(broker) {
@@ -101,17 +102,18 @@ export async function reloadOrOpenTab(broker) {
                         tabId = tab.id;
                     });
                 }
-            const listener = function (tabIdUpdated, changeInfo, tab) {
-                if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
-                    chrome.tabs.update(tabId, { active: true });
-                    chrome.tabs.onUpdated.removeListener(listener);
-                    resolve();
-                }
-            };
+                const listener = function (tabIdUpdated, changeInfo, tab) {
+                    if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
+                        chrome.tabs.update(tabId, { active: true });
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        resolve();
+                    }
+                };
 
-            chrome.tabs.onUpdated.addListener(listener);
-        });
-    });
+                chrome.tabs.onUpdated.addListener(listener);
+            }
+        })
+    })
 }
 
 async function deleteCookie(cookie) {
@@ -149,8 +151,8 @@ export async function addAccount(broker) {
             const results = await executeScriptAsync(tab.id, clearLocalStorageData, []);
             const output = results[0].result;
         }
+    }
 }
-
 
 export function executeScriptAsync(tabId, func, args) {
     return new Promise((resolve, reject) => {
