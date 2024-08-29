@@ -9,8 +9,21 @@ function hexToArrayBuffer(hexString) {
     return new Uint8Array(hexString.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16))).buffer;
 }
 
+function atobPolyfill(input) {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+    let str = String(input).replace(/=+$/, '');
+    if (str.length % 4 === 1) {
+        throw new Error("'atob' failed: The string to be decoded is not correctly encoded.");
+    }
+    let output = '';
+    for (let bc = 0, bs, buffer, idx = 0; buffer = str.charAt(idx++); ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer, bc++ % 4) ? output += String.fromCharCode(255 & bs >> (-2 * bc & 6)) : 0) {
+        buffer = chars.indexOf(buffer);
+    }
+    return output;
+}
+
 function base64ToArrayBuffer(base64) {
-    var binary_string = window.atob(base64);
+    var binary_string = atobPolyfill(base64);
     var len = binary_string.length;
     var bytes = new Uint8Array(len);
     for (var i = 0; i < len; i++) {
@@ -24,7 +37,7 @@ async function generateKey(salt, password, keySize, iterations) {
     const passwordBuffer = encoder.encode(password);
     const saltBuffer = hexToArrayBuffer(salt);
 
-    const importedKey = await window.crypto.subtle.importKey(
+    const importedKey = await crypto.subtle.importKey(
         "raw",
         passwordBuffer,
         { name: "PBKDF2" },
@@ -32,7 +45,7 @@ async function generateKey(salt, password, keySize, iterations) {
         ["deriveBits"]
     );
 
-    const derivedBits = await window.crypto.subtle.deriveBits(
+    const derivedBits = await crypto.subtle.deriveBits(
         {
             name: "PBKDF2",
             salt: saltBuffer,
@@ -50,7 +63,7 @@ async function decryptAesCbc256(cipheredText, key, iv) {
     const ivBuffer = hexToArrayBuffer(iv);
     const cipherBuffer = base64ToArrayBuffer(cipheredText);
 
-    const importedKey = await window.crypto.subtle.importKey(
+    const importedKey = await crypto.subtle.importKey(
         "raw",
         key,
         { name: "AES-CBC" },
@@ -58,7 +71,7 @@ async function decryptAesCbc256(cipheredText, key, iv) {
         ["decrypt"]
     );
 
-    const decrypted = await window.crypto.subtle.decrypt(
+    const decrypted = await crypto.subtle.decrypt(
         { name: "AES-CBC", iv: ivBuffer },
         importedKey,
         cipherBuffer

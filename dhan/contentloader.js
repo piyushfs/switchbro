@@ -1,8 +1,8 @@
-import { getStoredAccountsDhan, getDhanAccountList, delAllStoredAccountsDhan, delStoredAccountsDhan, dhanNewLogin } from "./dhan.js"
-import { capitalizeWords, reloadOrOpenTab, switchUser, addAccount } from "../utils.js"
+import { getStoredAccounts, getAccountList, delAllStoredAccounts, delStoredAccounts, dhanNewLogin, clearAccount, reloadOrOpenTab, switchUser } from "./dhan.js"
+import { capitalizeWords } from "../utils.js"
 
-async function displayDhanAccounts() {
-    const dhan_users = await getDhanAccountList()
+async function displayAccounts() {
+    const dhan_users = await getAccountList()
     const ul = document.getElementById('dhanData');
     ul.innerHTML = '';
     var headerhtml = `
@@ -66,36 +66,31 @@ async function displayDhanAccounts() {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
-
-    // load accounts
-    await displayDhanAccounts()
+    await displayAccounts()
     const addAccountBtn = document.getElementById('dhanData');
     addAccountBtn.addEventListener('click', async function (event) {
-        if (event.target.classList.contains('switchAcc')) {
-            const userid = event.target.id;
-            const allaccs = await getStoredAccountsDhan()
-            if (userid in allaccs) {
-                await switchUser(allaccs[userid], "DHAN")
-            }
-            await reloadOrOpenTab('DHAN');
-            await displayDhanAccounts()
-        } else if (event.target.id == 'addAccDhan') {
-            await addAccount('DHAN')
+        if (event.target.id == 'addAccDhan') {
+            await clearAccount()
             await dhanNewLogin()
-
-            // reloadOrOpenTab('DHAN')
+        } else if (event.target.classList.contains('switchAcc')) {
+            const userid = event.target.id;
+            const allaccs = await getStoredAccounts()
+            if (userid in allaccs) {
+                await switchUser(allaccs[userid])
+            }
+            await reloadOrOpenTab();
         } else if (event.target.classList.contains('deleteAcc')) {
             const userid = event.target.id;
-            await delStoredAccountsDhan(userid)
-            await displayDhanAccounts()
+            await delStoredAccounts(userid)
         }
+        await displayAccounts()
     });
 
     const deleteDhanAll = document.getElementById('deleteAllDhan')
     deleteDhanAll.addEventListener('click', async function (event) {
-        await delAllStoredAccountsDhan()
-        await addAccount('DHAN')
-        await displayDhanAccounts()
+        await delAllStoredAccounts()
+        await clearAccount()
+        await displayAccounts()
         await dhanNewLogin()
     });
 });
@@ -103,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 chrome.runtime.onMessage.addListener(
     async function (request, sender, sendResponse) {
         if (request.action === "repaintDhan") {
-            await displayDhanAccounts();
+            await displayAccounts();
         }
     }
 );

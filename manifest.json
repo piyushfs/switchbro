@@ -9,6 +9,26 @@
         "tabs",
         "scripting"
     ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://login.dhan.co/*"
+            ],
+            "js": [
+                "dhan/injectlogin.js"
+            ],
+            "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "https://web.dhan.co/*"
+            ],
+            "js": [
+                "dhan/injectweb.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
     "host_permissions": [
         "https://*.fyers.in/*",
         "http://*.fyers.in/*",
@@ -20,7 +40,8 @@
         "https://.zerodha.com/",
         "https://*.dhan.co/*",
         "https://.dhan.co/",
-        "http://.dhan.co/"
+        "http://.dhan.co/",
+        "https://login.dhan.co/*"
     ],
     "action": {
         "default_popup": "popup.html"

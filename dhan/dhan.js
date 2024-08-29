@@ -1,17 +1,17 @@
 
 
-import { CHROMESTORAGE, combineObjects, getLocalStorageData, executeScriptAsync, clearLocalStorageData, reloadOrOpenTab, setLocalStorageData } from "../utils.js"
+import { CHROMESTORAGE, combineObjects, getLocalStorageData, executeScriptAsync, clearLocalStorageData, setLocalStorageData, deleteCookie } from "../utils.js"
 import { decryptDataDhan } from "./decrypt.js"
 
 const STORAGE_KEY_DHAN = "stored_data_dhan"
 
 // ----------------------------------------------------------------------------------------------------------------
-export async function getStoredAccountsDhan() {
+export async function getStoredAccounts() {
     const result = await CHROMESTORAGE.get(STORAGE_KEY_DHAN)
     return result
 }
 
-export async function addStoredAccountsDhan(user) {
+export async function addStoredAccounts(user) {
     const result = await CHROMESTORAGE.get(STORAGE_KEY_DHAN)
     if (Object.keys(user).length !== 0) {
         const combined = combineObjects(result, user)
@@ -21,7 +21,7 @@ export async function addStoredAccountsDhan(user) {
     return result
 }
 
-export async function delStoredAccountsDhan(user_id) {
+export async function delStoredAccounts(user_id) {
     const result = await CHROMESTORAGE.get(STORAGE_KEY_DHAN)
     if (user_id in result) {
         delete result[user_id];
@@ -29,7 +29,7 @@ export async function delStoredAccountsDhan(user_id) {
     await CHROMESTORAGE.set(STORAGE_KEY_DHAN, result)
 }
 
-export async function delAllStoredAccountsDhan() {
+export async function delAllStoredAccounts() {
     await CHROMESTORAGE.remove(STORAGE_KEY_DHAN)
 }
 
@@ -40,12 +40,12 @@ async function getCurrentUserDetails() {
         for (const tab of reqTabs) {
             const results = await executeScriptAsync(tab.id, getLocalStorageData, []);
             const output = results[0].result;
-            return output['userdata']
+            return output
         }
     } catch (error) {
         console.error('Error injecting script:', error);
     }
-    return ""
+    return {}
 }
 
 
@@ -74,7 +74,7 @@ export async function getLocalStorageStoredData(userid) {
     return obj
 }
 
-export async function getCurrentAccountDhan() {
+export async function getCurrentAccount() {
 
 
     const domain = ".dhan.co"
@@ -82,9 +82,7 @@ export async function getCurrentAccountDhan() {
 
     var user = {}
     user['broker'] = 'DHAN'
-    // user['localdata'] = await getLocalStorageStoredData(user['id'])
     user['cookies'] = []
-    // console.log(user, 'dhan', cookies)
     for (const item of cookies) {
         if (item["value"] == "null") {
             continue
@@ -95,16 +93,14 @@ export async function getCurrentAccountDhan() {
     }
     if (user['cookies'].length != 0) {
         const data = await getCurrentUserDetails(user['id'])
-        console.log('userdata', data)
         try {
-            if (data != "") {
-                const decrypted = await decryptDataDhan(data)
+            if (data.length != 0 && (data['userdata'] != undefined && data['userdata'] != "")) {
+                const decrypted = await decryptDataDhan(data['userdata'])
                 const parsed = JSON.parse(decrypted)
-                user['userdata'] = data
+                user['localdata'] = data
                 console.log(parsed, 'decrypted')
                 user['id'] = parsed['login_id']
                 user['display_name'] = parsed['display_name']
-                console.log(user)
                 return { [user['id']]: user }
             }
         } catch {
@@ -116,9 +112,9 @@ export async function getCurrentAccountDhan() {
 }
 
 
-export async function getDhanAccountList() {
-    const curr_user = await getCurrentAccountDhan()
-    const storedUsers = await addStoredAccountsDhan(curr_user)
+export async function getAccountList() {
+    const curr_user = await getCurrentAccount()
+    const storedUsers = await addStoredAccounts(curr_user)
     const user_id = Object.keys(curr_user)[0]
     var dhan_users = []
     Object.keys(storedUsers).forEach(key => {
@@ -137,87 +133,132 @@ export async function getDhanAccountList() {
 
 export async function dhanNewLogin() {
     return new Promise((resolve) => {
-        chrome.tabs.query({}, function (tabs) {
+        chrome.tabs.query({}, async function (tabs) {
             var reloaded = false;
-            var tabId;
-
-            console.log('tabs', tabs)
             for (const item of tabs) {
-                if (item['url'].includes('web.dhan.co')) {
-                    tabId = item.id;
-                    chrome.tabs.update(tabId, { url: 'https://login.dhan.co' }, async (tab) => {
-                        tabId = tab.id;
-                        console.log('clearing')
-                        var domain = "dhan.co"
-                        const cookies = await chrome.cookies.getAll({ domain });
-                        console.log(cookies)
-                        for (const c of cookies) {
-                            await deleteCookie(c);
-                        }
-                        const cookie2s = await chrome.cookies.getAll({ domain });
-                        console.log(cookie2s)
-
-                        await executeScriptAsync(tab.id, setLocalStorageData, [{ 'userdata': '' }]);
-
-                        await chrome.tabs.onUpdated.addListener(async function listener(updatedTabId, info) {
-                            // console.log('completed')
-
-                            console.log(info.status, 'status', await executeScriptAsync(tab.id, getLocalStorageData, []))
-                            if (updatedTabId == tabId) {
-                                await executeScriptAsync(updatedTabId, clearLocalStorageData, []);
-                                await executeScriptAsync(tab.id, setLocalStorageData, [{ 'userdata': '' }]);
-
-                            }
-
-                            if (updatedTabId === tabId && info.status === 'loading') {
-                                chrome.tabs.onUpdated.removeListener(listener);
-                                console.log('completed')
-                                console.log('clearing')
-                                const results = await executeScriptAsync(tab.id, getLocalStorageData, []);
-
-                                const results2 = await executeScriptAsync(tab.id, setLocalStorageData, [{ 'userdata': '' }]);
-                                // const r = await executeScriptAsync(tab.id, clearLocalStorageData, []);
-                                const results3 = await executeScriptAsync(tab.id, getLocalStorageData, []);
-
-                                console.log(results3, 'cleard', results, results2)
-                                // await chrome.tabs.update(tabId, { url: 'https://login.dhan.co' })
-                            }
-                        });
-
-                        // await new Promise(resolve => setTimeout(resolve, 1000));
-
-
-
-                    });
+                if (item['url'].includes('web.dhan.co') || item['url'].includes('login.dhan.co')) {
+                    await setNewLoginCookie()
+                    chrome.tabs.update(item.id, { url: 'https://login.dhan.co' })
                     reloaded = true;
-                    break;
                 }
             }
             if (!reloaded) {
-                chrome.tabs.create({ url: 'https://login.dhan.co' }, (tab) => {
-                    tabId = tab.id;
-                });
+                chrome.tabs.create({ url: 'https://login.dhan.co' },)
             }
-
-            const listener = function (tabIdUpdated, changeInfo, tab) {
-                if (tabIdUpdated === tabId && changeInfo.status === 'complete') {
-                    chrome.tabs.update(tabId, { active: true });
-                    chrome.tabs.onUpdated.removeListener(listener);
-                    resolve();
-                }
-            };
-
-            chrome.tabs.onUpdated.addListener(listener);
+            resolve();
         });
     });
 }
 
-async function deleteCookie(cookie) {
-    const protocol = cookie.secure ? 'https:' : 'http:';
-    const cookieUrl = `${protocol}//${cookie.domain}${cookie.path}`;
-    await chrome.cookies.remove({
-        url: cookieUrl,
-        name: cookie.name,
-        storeId: cookie.storeId
+
+export async function clearAccount() {
+    const curr_user = await getCurrentAccount()
+    if (Object.keys(curr_user).length !== 0) {
+        var key = Object.keys(curr_user)[0]
+        for (const c of curr_user[key]['cookies']) {
+            await deleteCookie(c);
+        }
+    }
+}
+
+export async function reloadOrOpenTab() {
+    return new Promise((resolve) => {
+        chrome.tabs.query({}, function (tabs) {
+            var reloaded = false;
+            const tabIds = [];
+            var activeTabId = "";
+            for (const item of tabs) {
+                if (item['url'].includes('web.dhan.co') || item['url'].includes('login.dhan.co')) {
+                    tabIds.push(item.id);
+                    chrome.tabs.update(item.id, { url: 'https://web.dhan.co' })
+                    reloaded = true;
+                    if (item.active) {
+                        activeTabId = item.id;
+                    }
+                }
+            }
+            if (!reloaded) {
+                chrome.tabs.create({ url: 'https://web.dhan.co' }, (tab) => {
+                    tabIds.push(item.id);
+                });
+            }
+
+            const listener = function (tabIdUpdated, changeInfo, tab) {
+                if (activeTabId == "") {
+                    if (tabIds.includes(tabIdUpdated) && changeInfo.status === 'complete') {
+                        chrome.tabs.update(tabIdUpdated, { active: true });
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        resolve();
+                    }
+                } else {
+                    if (tabIdUpdated == activeTabId && changeInfo.status === 'complete') {
+                        chrome.tabs.update(tabIdUpdated, { active: true });
+                        chrome.tabs.onUpdated.removeListener(listener);
+                        resolve();
+                    }
+                }
+            };
+            chrome.tabs.onUpdated.addListener(listener);
+        })
+    })
+}
+
+
+export async function switchUser(user) {
+    const tabs = await chrome.tabs.query({});
+    const reqTabs = tabs.filter(tab => tab.url.includes("web.dhan.co") || tab.url.includes('login.dhan.co'));
+    await setSwitchAccCookie(user['localdata'])
+}
+
+export async function setNewLoginCookie() {
+    const web_cookie_name_clear = "web_dhan_clear"
+    const web_cookie_name_switch = "web_dhan_switch"
+    await setCookiePromise(web_cookie_name_clear, "true")
+    await setCookiePromise(web_cookie_name_switch, "false")
+    const login_cookie_name_clear = "login_dhan_clear"
+    const login_cookie_name_switch = "login_dhan_switch"
+    await setCookiePromise(login_cookie_name_clear, "true")
+    await setCookiePromise(login_cookie_name_switch, "false")
+}
+
+const setCookiePromise = (key, value) => {
+    return new Promise((resolve, reject) => {
+        chrome.cookies.set({
+            url: "https://dhan.co",
+            domain: ".dhan.co", // Replace with your domain
+            name: key,
+            value: value,
+            path: "/"
+        }, function (cookie) {
+            if (chrome.runtime.lastError) {
+                console.log("Error setting cookie:", chrome.runtime.lastError);
+                resolve(cookie);
+            } else {
+                console.log("New login cookie set:", cookie);
+                resolve(cookie);
+            }
+        });
     });
+};
+
+
+async function setSwitchAccCookie(data) {
+    try {
+        const cookiePromises = Object.entries(data).map(([key, value]) =>
+            setCookiePromise("switchbro_" + key, value)
+        );
+        await Promise.all(cookiePromises);
+        console.log("setting cookies")
+        const web_cookie_name_clear = "web_dhan_clear"
+        const web_cookie_name_switch = "web_dhan_switch"
+        await setCookiePromise(web_cookie_name_clear, "true")
+        await setCookiePromise(web_cookie_name_switch, "true")
+        const login_cookie_name_clear = "login_dhan_clear"
+        const login_cookie_name_switch = "login_dhan_switch"
+        await setCookiePromise(login_cookie_name_clear, "true")
+        await setCookiePromise(login_cookie_name_switch, "true")
+        console.log("All cookies have been set successfully");
+    } catch (error) {
+        console.error("An error occurred while setting cookies:", error);
+    }
 }
