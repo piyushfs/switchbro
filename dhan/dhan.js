@@ -1,6 +1,6 @@
 
 
-import { CHROMESTORAGE, combineObjects, getLocalStorageData, executeScriptAsync, clearLocalStorageData, setLocalStorageData, deleteCookie } from "../utils.js"
+import { CHROMESTORAGE, combineObjects, getLocalStorageData, executeScriptAsync, deleteCookie } from "../utils.js"
 import { decryptDataDhan } from "./decrypt.js"
 
 const STORAGE_KEY_DHAN = "stored_data_dhan"
