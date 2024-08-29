@@ -17,7 +17,7 @@ function getCookies() {
 }
 
 function deleteCookie(name) {
-    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; domain=.dhan.co;';
 }
 
 // actual action
@@ -30,6 +30,8 @@ if (login_cookie_name_clear in cookies) {
         console.log('cleared local storage')
     }
     deleteCookie(login_cookie_name_clear)
+    console.log(cookies, 'cookies')
+
 }
 
 

@@ -1,7 +1,7 @@
 {
     "name": "SwitchBro",
     "manifest_version": 3,
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Let's you seamlessly switch between different accounts of a broker",
     "permissions": [
         "cookies",
