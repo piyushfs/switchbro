@@ -104,6 +104,9 @@ export async function getCurrentAccount() {
         if (item["value"] == "null") {
             continue
         }
+        if (item["domain"] != "kite.zerodha.com" && item["domain"] != ".zerodha.com") {
+            continue
+        }
         if (item['name'] == "enctoken") {
             user['token'] = item['value']
             user['cookies'].push(item)
