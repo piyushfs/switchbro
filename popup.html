@@ -43,6 +43,12 @@
         <button type="button" title="Dhan" id="displayDhan" class="btn shadow-none"
             style="margin: 0.2em;border-radius:50em;background-color:#272727;"><img src="dhan.png"
                 style="width: 2em;scale: 1.2;"></button>
+
+        <button type="button" class="btn shadow-none" style="margin: 0.2em;border-radius:50em;margin-left: 8em;">
+            <div class="form-check form-switch" style="width: 2em;scale: 1.2;">
+                <input class="form-check-input" type="checkbox" id="autologin">
+            </div>
+        </button>
     </div>
 
     <ol class="list-group" style="padding: 0.5em;display: none;" id="fyersData">
@@ -90,6 +96,35 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="fyersEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <span class="currentuser" style="display: none;"></span>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
+                <div class="modal-body">
+                    <div class="input-group flex-nowrap">
+                        <input type="password" class="form-control" placeholder="Pin" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="pin">
+                        <button class="btn btn-outline-secondary" type="button" id="toggleFyersPwd">
+
+                        </button>
+                    </div>
+                    <br>
+                    <div class="input-group flex-nowrap">
+                        <input type="text" class="form-control" placeholder="TOTP Secret" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="totp">
+                    </div>
+
+                    <br>
+                    <div style="float: right;">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
+                        <button type="button" id="saveFyersCreds" class="btn btn-primary btn-sm"
+                            data-bs-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="modal fade" id="dhanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

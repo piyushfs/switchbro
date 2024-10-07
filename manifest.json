@@ -27,6 +27,15 @@
                 "dhan/injectweb.js"
             ],
             "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "https://login.fyers.in/*"
+            ],
+            "js": [
+                "fyers/injectcreds.js"
+            ],
+            "run_at": "document_idle"
         }
     ],
     "host_permissions": [

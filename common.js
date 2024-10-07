@@ -1,6 +1,8 @@
 
 import { CHROMESTORAGE } from "./utils.js";
 
+const AUTOLOGIN = "autologin"
+
 document.addEventListener('DOMContentLoaded', async function () {
 
     var currbroker = await CHROMESTORAGE.get('currentBroker')
@@ -71,5 +73,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         await CHROMESTORAGE.set("currentBroker", "DHAN")
     })
+
+    document.getElementById('autologin').addEventListener('click', async function (event) {
+        console.log('storing', { 'enabled': !document.getElementById('autologin').checked })
+        const active = await CHROMESTORAGE.get(AUTOLOGIN)
+        console.log(active)
+        await CHROMESTORAGE.set(AUTOLOGIN, { 'enabled': document.getElementById('autologin').checked })
+    });
+
+    const active = await CHROMESTORAGE.get(AUTOLOGIN)
+    if (active && active['enabled']) {
+        document.getElementById('autologin').checked = true
+    }
 
 });
