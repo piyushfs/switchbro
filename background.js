@@ -5,6 +5,8 @@ import { CHROMESTORAGE } from "./utils.js";
 
 
 import * as fyersCredModule from "./fyers/creds.js";
+import * as zerodhaCredModule from "./zerodha/creds.js";
+
 import { generateTOTP } from "./totp.js";
 
 const AUTOLOGIN = "autologin"
@@ -84,6 +86,13 @@ chrome.commands.onCommand.addListener(async (command) => {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.action === "fyersCreds") {
         fyersCredModule.getStoredCreds().then(data => {
+            sendResponse({ data: data });
+        })
+        return true;
+    }
+
+    if (request.action === "zerodhaCreds") {
+        zerodhaCredModule.getStoredCreds().then(data => {
             sendResponse({ data: data });
         })
         return true;

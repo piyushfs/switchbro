@@ -96,6 +96,36 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="zerodhaEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <span class="currentuser" style="display: none;"></span>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
+                <div class="modal-body">
+                    <div class="input-group flex-nowrap">
+                        <input type="password" class="form-control" placeholder="Password" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="pwd">
+                        <button class="btn btn-outline-secondary" type="button" id="toggleZerodhaPwd">
+
+                        </button>
+                    </div>
+                    <br>
+                    <div class="input-group flex-nowrap">
+                        <input type="text" class="form-control" placeholder="TOTP Secret" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="totp">
+                    </div>
+
+                    <br>
+                    <div style="float: right;">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
+                        <button type="button" id="saveZerodhaCreds" class="btn btn-primary btn-sm"
+                            data-bs-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="fyersEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <span class="currentuser" style="display: none;"></span>
         <div class="modal-dialog modal-dialog-centered">

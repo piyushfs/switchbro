@@ -30,6 +30,15 @@
         },
         {
             "matches": [
+                "https://kite.zerodha.com/*"
+            ],
+            "js": [
+                "zerodha/injectcreds.js"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
                 "https://login.fyers.in/*"
             ],
             "js": [
