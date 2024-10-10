@@ -1,30 +1,32 @@
 var FYERS_SECTIONINFO = {}
 
 function monitorSections() {
-    const sections = document.querySelectorAll('section')
-    sections.forEach(element => {
-        const computedStyle = window.getComputedStyle(element);
-        const displayValue = computedStyle.display;
-        const sectionId = element.id; // Get the section's ID
-        if ((sectionId in FYERS_SECTIONINFO && FYERS_SECTIONINFO[sectionId] != displayValue && displayValue === 'block') || (FYERS_SECTIONINFO[sectionId] == undefined && displayValue == "block")) {
-            chrome.runtime.sendMessage({ action: "shouldAutoLogin" }, function (response) {
-                const resp = response.data
-                console.log(resp, response)
-                if (resp && resp['enabled']) {
-                    if (sectionId === 'confirm-otp-page') {
-                        automateTotp()
-                        FYERS_SECTIONINFO = {}
-                        return
-                    } else if (sectionId === 'verify-pin-page') {
-                        automatePin()
-                        FYERS_SECTIONINFO = {}
-                        return
-                    }
-                }
-            })
+    const totp = document.getElementById('confirm-otp-page')
+    const pin = document.getElementById('verify-pin-page')
+
+    if (pin && (FYERS_SECTIONINFO['pin'])) {
+        return
+    }
+    if (totp && (FYERS_SECTIONINFO['totp'])) {
+        return
+    }
+    chrome.runtime.sendMessage({ action: "shouldAutoLogin" }, function (response) {
+        const resp = response.data
+        console.log(resp, response)
+        if (resp && resp['enabled']) {
+            const computedStyle = window.getComputedStyle(totp);
+            const displayValue = computedStyle.display;
+            const computedStylePin = window.getComputedStyle(pin);
+            const displayValuePin = computedStylePin.display;
+            if (displayValue === 'block') {
+                FYERS_SECTIONINFO['totp'] = true
+                automateTotp()
+            } else if (displayValuePin === 'block') {
+                FYERS_SECTIONINFO['pin'] = true
+                automatePin()
+            }
         }
-        FYERS_SECTIONINFO[sectionId] = displayValue
-    });
+    })
 }
 
 

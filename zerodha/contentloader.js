@@ -3,7 +3,6 @@ import { capitalizeWords, SEEPWD, HIDEPWD, CHROMESTORAGE } from "../utils.js"
 import { getStoredCreds, addStoredCreds } from "./creds.js";
 
 async function displayAccounts() {
-
     const zerodha_users = await getAccountList()
     const ul = document.getElementById('zerodhaData');
     ul.innerHTML = '';
@@ -107,19 +106,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     document.getElementById('saveZerodhaCreds').addEventListener('click', async function (event) {
-        const fyersEdit = document.getElementById('zerodhaEdit');
-        const accId = fyersEdit.querySelector(".currentuser").id
+        const zerodhaEdit = document.getElementById('zerodhaEdit');
+        const accId = zerodhaEdit.querySelector(".currentuser").id
         var user = {}
         user[accId] = {}
-        user[accId]['pwd'] = fyersEdit.querySelector("#pwd").value;
-        user[accId]['totp'] = fyersEdit.querySelector("#totp").value;
+        user[accId]['pwd'] = zerodhaEdit.querySelector("#pwd").value;
+        user[accId]['totp'] = zerodhaEdit.querySelector("#totp").value;
         await addStoredCreds(user)
     });
 
     document.getElementById('toggleZerodhaPwd').addEventListener('click', async function (event) {
-        const fyersEdit = document.getElementById('zerodhaEdit');
-        const pinfield = fyersEdit.querySelector("#pwd")
-        const togglepwd = fyersEdit.querySelector("#toggleZerodhaPwd")
+        const zerodhaEdit = document.getElementById('zerodhaEdit');
+        const pinfield = zerodhaEdit.querySelector("#pwd")
+        const togglepwd = zerodhaEdit.querySelector("#toggleZerodhaPwd")
 
         if (pinfield.type == "password") {
             pinfield.type = "text"
@@ -133,22 +132,22 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('zerodhaEdit').addEventListener('show.bs.modal', async function (event) {
         const triggerElement = event.relatedTarget;
         const accId = triggerElement.closest('.switchAcc').id;
-        const fyersEdit = document.getElementById('zerodhaEdit');
-        fyersEdit.querySelector("#toggleZerodhaPwd").innerHTML = SEEPWD
-        fyersEdit.querySelector(".currentuser").id = accId
-        fyersEdit.querySelector("#pwd").type = "password"
+        const zerodhaEdit = document.getElementById('zerodhaEdit');
+        zerodhaEdit.querySelector("#toggleZerodhaPwd").innerHTML = SEEPWD
+        zerodhaEdit.querySelector(".currentuser").id = accId
+        zerodhaEdit.querySelector("#pwd").type = "password"
 
-        const fyers_users = await getStoredCreds()
-        console.log(fyers_users, 'users')
-        if (accId in fyers_users) {
-            const item = fyers_users[accId]
+        const zerodha_users = await getStoredCreds()
+        console.log(zerodha_users, 'users')
+        if (accId in zerodha_users) {
+            const item = zerodha_users[accId]
             const pin = item['pwd']
             const totp = item['totp']
             if (pin) {
-                fyersEdit.querySelector('#pwd').value = pin;
+                zerodhaEdit.querySelector('#pwd').value = pin;
             }
             if (totp) {
-                fyersEdit.querySelector('#totp').value = totp;
+                zerodhaEdit.querySelector('#totp').value = totp;
             }
         }
     });

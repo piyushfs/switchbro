@@ -15,7 +15,8 @@
                 "https://login.dhan.co/*"
             ],
             "js": [
-                "dhan/injectlogin.js"
+                "dhan/injectlogin.js",
+                "dhan/injectcreds.js"
             ],
             "run_at": "document_start"
         },

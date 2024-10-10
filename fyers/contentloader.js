@@ -1,5 +1,5 @@
 import { getStoredAccounts, getAccountList, delAllStoredAccounts, delStoredAccounts, clearAccount, reloadOrOpenTab, switchUser } from "./fyers.js"
-import { capitalizeWords, SEEPWD, HIDEPWD, CHROMESTORAGE } from "../utils.js"
+import { capitalizeWords, SEEPWD, HIDEPWD } from "../utils.js"
 import { getStoredCreds, addStoredCreds } from "./creds.js";
 
 async function displayAccounts() {

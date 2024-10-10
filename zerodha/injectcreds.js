@@ -3,8 +3,6 @@ var ZERODHA_SECTIONINFO = {}
 function monitorSections() {
     const pwd = document.getElementById('password')
     const totp = document.getElementById('userid')
-
-
     if (pwd && (ZERODHA_SECTIONINFO['pwd'])) {
         return
     }
