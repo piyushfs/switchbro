@@ -40,7 +40,7 @@ function automatePin(clientname, pincomponent) {
             if (clientname in response.data) {
                 const pin = response.data[clientname]['pin']
                 console.log(pin)
-                if (pin != undefined && pin !== "" && pin.length == 6) {
+                if (pin != undefined && pin !== "" && pin.length == 6 && pincomponent.length == 6) {
                     pincomponent.forEach((element, i) => {
                         console.log(element, i)
                         element.value = pin[i]

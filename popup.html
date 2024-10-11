@@ -27,6 +27,8 @@
     </style>
 
 
+
+
 </head>
 
 <body>
@@ -61,9 +63,22 @@
     <ol class="list-group" style="padding: 0.5em;display: none;" id="dhanData">
     </ol>
 
-    <div class="modal fade " id="fyersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 11; width: 14em; ">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-delay="1000" style="border-radius: 0.5em;">
+            <strong>
+                <center>
+                    <div class=" toast-body" style="padding: 0.5em;">
+                    </div>
+                </center>
+            </strong>
+        </div>
+    </div>
+
+    <div class=" modal fade " id=" fyersModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
+            <div class="modal-content"
+                style="width: 300px;margin-left: auto;margin-right: auto;background-color: #f5f5f5;">
                 <div class="modal-body">
                     <span>
                         Are you sure you want to delete data of all the users?
@@ -81,7 +96,8 @@
 
     <div class="modal fade" id="zerodhaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
+            <div class="modal-content"
+                style="width: 300px;margin-left: auto;margin-right: auto;background-color: #f5f5f5;">
                 <div class="modal-body">
                     <span>
                         Are you sure you want to delete data of all the users?
@@ -97,93 +113,10 @@
         </div>
     </div>
 
-    <div class="modal fade" id="zerodhaEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <span class="currentuser" style="display: none;"></span>
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
-                <div class="modal-body">
-                    <div class="input-group flex-nowrap">
-                        <input type="password" class="form-control" placeholder="Password" aria-label="Username"
-                            aria-describedby="addon-wrapping" id="pwd">
-                        <button class="btn btn-outline-secondary" type="button" id="toggleZerodhaPwd">
-
-                        </button>
-                    </div>
-                    <br>
-                    <div class="input-group flex-nowrap">
-                        <input type="text" class="form-control" placeholder="TOTP Secret" aria-label="Username"
-                            aria-describedby="addon-wrapping" id="totp">
-                    </div>
-
-                    <br>
-                    <div style="float: right;">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
-                        <button type="button" id="saveZerodhaCreds" class="btn btn-primary btn-sm"
-                            data-bs-dismiss="modal">Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="fyersEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <span class="currentuser" style="display: none;"></span>
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
-                <div class="modal-body">
-                    <div class="input-group flex-nowrap">
-                        <input type="password" class="form-control" placeholder="Pin" aria-label="Username"
-                            aria-describedby="addon-wrapping" id="pin">
-                        <button class="btn btn-outline-secondary" type="button" id="toggleFyersPwd">
-
-                        </button>
-                    </div>
-                    <br>
-                    <div class="input-group flex-nowrap">
-                        <input type="text" class="form-control" placeholder="TOTP Secret" aria-label="Username"
-                            aria-describedby="addon-wrapping" id="totp">
-                    </div>
-
-                    <br>
-                    <div style="float: right;">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
-                        <button type="button" id="saveFyersCreds" class="btn btn-primary btn-sm"
-                            data-bs-dismiss="modal">Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="dhanEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <span class="currentuser" style="display: none;"></span>
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
-                <div class="modal-body">
-                    <div class="input-group flex-nowrap">
-                        <input type="password" class="form-control" placeholder="Pin" aria-label="Username"
-                            aria-describedby="addon-wrapping" id="pin">
-                        <button class="btn btn-outline-secondary" type="button" id="toggleDhanPwd">
-
-                        </button>
-                    </div>
-                    <br>
-
-                    <br>
-                    <div style="float: right;">
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
-                        <button type="button" id="saveDhanCreds" class="btn btn-primary btn-sm"
-                            data-bs-dismiss="modal">Save</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <div class="modal fade" id="dhanModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="width: 300px;margin-left: auto;margin-right: auto;">
+            <div class="modal-content"
+                style="width: 300px;margin-left: auto;margin-right: auto;background-color: #f5f5f5;">
                 <div class="modal-body">
                     <span>
                         Are you sure you want to delete data of all the users?
@@ -200,6 +133,101 @@
     </div>
 
 
+    <div class="modal fade" id="zerodhaEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <span class="currentuser" style="display: none;"></span>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="width: 300px;margin-left: auto;margin-right: auto; background-color: #f5f5f5;">
+                <div class="modal-body">
+                    <div class="input-group input-group-sm flex-nowrap">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Pwd</span>
+                        <input type="password" class="form-control" placeholder="Password" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="pwd">
+                        <span class="input-group-text" type="button" id="toggleZerodhaPwd"></span>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-sm flex-nowrap">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">TOTP</span>
+                        <input type="text" class="form-control" placeholder="TOTP Secret" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="totp">
+                        <span class="input-group-text" id="inputGroup-sizing-sm" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-question-lg" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 0 1-.5.5h-.77a.5.5 0 0 1-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777ZM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14" />
+                            </svg>
+                        </span>
+                    </div>
+
+                    <br>
+                    <div style="float: right;">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="saveZerodhaCreds" class="btn btn-primary btn-sm"
+                            data-bs-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="fyersEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <span class="currentuser" style="display: none;"></span>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="width: 300px;margin-left: auto;margin-right: auto; background-color: #f5f5f5; ">
+                <div class="modal-body">
+                    <div class="input-group input-group-sm flex-nowrap">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Pin</span>
+                        <input type="password" class="form-control" placeholder="Pin" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="pin">
+                        <span class="input-group-text" type="button" id="toggleFyersPwd"></span>
+                    </div>
+                    <br>
+                    <div class="input-group input-group-sm flex-nowrap">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">TOTP</span>
+                        <input type="text" class="form-control" placeholder="TOTP Secret" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="totp">
+                        <span class="input-group-text" id="inputGroup-sizing-sm" type="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-question-lg" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M4.475 5.458c-.284 0-.514-.237-.47-.517C4.28 3.24 5.576 2 7.825 2c2.25 0 3.767 1.36 3.767 3.215 0 1.344-.665 2.288-1.79 2.973-1.1.659-1.414 1.118-1.414 2.01v.03a.5.5 0 0 1-.5.5h-.77a.5.5 0 0 1-.5-.495l-.003-.2c-.043-1.221.477-2.001 1.645-2.712 1.03-.632 1.397-1.135 1.397-2.028 0-.979-.758-1.698-1.926-1.698-1.009 0-1.71.529-1.938 1.402-.066.254-.278.461-.54.461h-.777ZM7.496 14c.622 0 1.095-.474 1.095-1.09 0-.618-.473-1.092-1.095-1.092-.606 0-1.087.474-1.087 1.091S6.89 14 7.496 14" />
+                            </svg>
+                        </span>
+                    </div>
+                    <br>
+                    <div style="float: right;">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="saveFyersCreds" class="btn btn-primary btn-sm"
+                            data-bs-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dhanEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <span class="currentuser" style="display: none;"></span>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content"
+                style="width: 300px;margin-left: auto;margin-right: auto; background-color: #f5f5f5;">
+                <div class="modal-body">
+                    <div class="input-group input-group-sm flex-nowrap">
+                        <span class="input-group-text" id="inputGroup-sizing-sm">Pin</span>
+                        <input type="password" class="form-control" placeholder="Pin" aria-label="Username"
+                            aria-describedby="addon-wrapping" id="pin">
+                        <span class="input-group-text" type="button" id="toggleDhanPwd"></span>
+                    </div>
+                    <br>
+                    <div style="float: right;">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" id="saveDhanCreds" class="btn btn-primary btn-sm"
+                            data-bs-dismiss="modal">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="common.js" type="module"></script>
     <script src="fyers/contentloader.js" type="module"></script>

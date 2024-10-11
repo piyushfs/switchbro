@@ -1,5 +1,9 @@
 var FYERS_SECTIONINFO = {}
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function monitorSections() {
     const totp = document.getElementById('confirm-otp-page')
     const pin = document.getElementById('verify-pin-page')
@@ -54,7 +58,9 @@ function automateTotp() {
                             section.querySelector('#fourth').value = totp[3]
                             section.querySelector('#fifth').value = totp[4]
                             section.querySelector('#sixth').value = totp[5]
-                            submit.click()
+                            sleep(100).then(() => {
+                                submit.click()
+                            })
                         })
                     }
                 }
@@ -81,7 +87,9 @@ function automatePin() {
                         section.querySelector('#second').value = pin[1]
                         section.querySelector('#third').value = pin[2]
                         section.querySelector('#fourth').value = pin[3]
-                        submit.click()
+                        sleep(100).then(() => {
+                            submit.click()
+                        })
                     }
                 }
             });

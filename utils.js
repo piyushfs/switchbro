@@ -85,9 +85,6 @@ export function clearLocalStorageData() {
     localStorage.clear();
 }
 
-export function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 export const SEEPWD = `<img src="eye-fill.svg">`
 export const HIDEPWD = `<img src="eye-slash-fill.svg">`

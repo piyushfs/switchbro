@@ -1,5 +1,9 @@
 var ZERODHA_SECTIONINFO = {}
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function monitorSections() {
     const pwd = document.getElementById('password')
     const totp = document.getElementById('userid')
@@ -42,7 +46,9 @@ function automateTotp(clientname, totpcomponent) {
                         const totp = response.data
                         totpcomponent.value = totp
                         fillInput("#userid", totp)
-                        document.querySelector('button[type="submit"]').click()
+                        sleep(100).then(() => {
+                            document.querySelector('button[type="submit"]').click()
+                        })
                     })
 
                 }
@@ -60,7 +66,9 @@ function automatePwd(clientname, pwdcomponent) {
                 if (pwd != undefined && pwd !== "") {
                     pwdcomponent.value = pwd
                     fillInput("#password", pwd)
-                    document.querySelector('button[type="submit"]').click()
+                    sleep(100).then(() => {
+                        document.querySelector('button[type="submit"]').click()
+                    })
                 }
             }
         });
