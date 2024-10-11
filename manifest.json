@@ -15,7 +15,8 @@
                 "https://login.dhan.co/*"
             ],
             "js": [
-                "dhan/injectlogin.js"
+                "dhan/injectlogin.js",
+                "dhan/injectcreds.js"
             ],
             "run_at": "document_start"
         },
@@ -27,6 +28,24 @@
                 "dhan/injectweb.js"
             ],
             "run_at": "document_start"
+        },
+        {
+            "matches": [
+                "https://kite.zerodha.com/*"
+            ],
+            "js": [
+                "zerodha/injectcreds.js"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://login.fyers.in/*"
+            ],
+            "js": [
+                "fyers/injectcreds.js"
+            ],
+            "run_at": "document_idle"
         }
     ],
     "host_permissions": [
@@ -68,5 +87,15 @@
             },
             "description": "Switch account to one level below"
         }
-    }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "help.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
 }

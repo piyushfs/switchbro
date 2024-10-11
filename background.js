@@ -1,6 +1,19 @@
 import * as fyersModule from "./fyers/fyers.js";
 import * as zerodhaModule from "./zerodha/zerodha.js";
 import * as dhanModule from "./dhan/dhan.js";
+import * as dhandecryptModule from "./dhan/decrypt.js";
+
+import { CHROMESTORAGE } from "./utils.js";
+
+
+import * as fyersCredModule from "./fyers/creds.js";
+import * as zerodhaCredModule from "./zerodha/creds.js";
+import * as dhanCredModule from "./dhan/creds.js";
+
+
+import { generateTOTP } from "./totp.js";
+
+const AUTOLOGIN = "autologin"
 
 chrome.commands.onCommand.addListener(async (command) => {
     if (command == "switch-up" || command == "switch-down") {
@@ -71,5 +84,49 @@ chrome.commands.onCommand.addListener(async (command) => {
                 }
             }
         }
+    }
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.action === "fyersCreds") {
+        fyersCredModule.getStoredCreds().then(data => {
+            sendResponse({ data: data });
+        })
+        return true;
+    }
+
+    if (request.action === "zerodhaCreds") {
+        zerodhaCredModule.getStoredCreds().then(data => {
+            sendResponse({ data: data });
+        })
+        return true;
+    }
+
+    if (request.action === "dhanCreds") {
+        dhanCredModule.getStoredCreds().then(data => {
+            sendResponse({ data: data });
+        })
+        return true;
+    }
+
+    if (request.action === "decryptdhanCreds") {
+        dhandecryptModule.decryptDataDhan(request.data).then(data => {
+            sendResponse({ data: data });
+        })
+        return true;
+    }
+
+    if (request.action === "totp") {
+        generateTOTP(request.data).then(data => {
+            sendResponse({ data: data });
+        })
+        return true;
+    }
+
+    if (request.action === "shouldAutoLogin") {
+        CHROMESTORAGE.get(AUTOLOGIN).then(active => {
+            sendResponse({ data: active })
+        })
+        return true;
     }
 });

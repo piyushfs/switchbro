@@ -86,3 +86,5 @@ export function clearLocalStorageData() {
 }
 
 
+export const SEEPWD = `<img src="eye-fill.svg">`
+export const HIDEPWD = `<img src="eye-slash-fill.svg">`

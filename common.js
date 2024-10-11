@@ -1,6 +1,8 @@
 
 import { CHROMESTORAGE } from "./utils.js";
 
+const AUTOLOGIN = "autologin"
+
 document.addEventListener('DOMContentLoaded', async function () {
 
     var currbroker = await CHROMESTORAGE.get('currentBroker')
@@ -71,5 +73,40 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         await CHROMESTORAGE.set("currentBroker", "DHAN")
     })
+
+    document.getElementById('autologin').addEventListener('click', async function (event) {
+        console.log('storing', { 'enabled': !document.getElementById('autologin').checked })
+        const state = document.getElementById('autologin').checked
+        await CHROMESTORAGE.set(AUTOLOGIN, { 'enabled': state })
+
+        if (state) {
+            document.querySelector('.toast-body').innerHTML = 'Auto-login is enabled!'
+            document.getElementById('liveToast').style.backgroundColor = '#c8e6c9'
+        } else {
+            document.querySelector('.toast-body').innerHTML = 'Auto-login is disabled!'
+            document.getElementById('liveToast').style.backgroundColor = '#ffcdd2'
+        }
+
+        // show toasts
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl)
+        })
+        toastList.forEach(toast => toast.show())
+
+    });
+
+    const active = await CHROMESTORAGE.get(AUTOLOGIN)
+    if (active && active['enabled']) {
+        document.getElementById('autologin').checked = true
+    }
+
+
+    const helpelem = document.querySelectorAll('.help');
+    helpelem.forEach(element => {
+        element.addEventListener('click', function () {
+            chrome.tabs.create({ url: chrome.runtime.getURL('help.html') });
+        });
+    });
 
 });
