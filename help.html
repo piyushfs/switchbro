@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Section - TOTP Setup</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <header class="bg-primary text-white text-center py-4">
+        <h1 class="display-6">How to Set Up TOTP Secret</h1>
+        <p class="lead">Follow these steps to configure TOTP for your brokers in our extension.</p>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container my-5">
+
+        <!-- Introduction Section -->
+        <section id="intro">
+            <div class="row mb-4">
+                <div class="col text-center">
+                    <p class="text-muted">This guide will help you extract the TOTP secret from your broker's website
+                        and set it up in an authentication app as well as our extension.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Broker 1 Steps -->
+        <section id="broker1">
+            <h2 class="text-center mb-4">For Fyers</h2>
+            <ol class="list-group list-group-numbered">
+                <li class="list-group-item">
+                    <strong>Step 1:</strong>
+                    <a href="https://support.fyers.in/portal/en/kb/articles/how-to-set-up-time-based-one-time-password-totp-in-fyers"
+                        target="_blank">Follow these steps to create a new TOTP</a> (If you have already enabled the
+                    TOTP, disable and create a new one)
+                </li>
+                <li class="list-group-item">
+                    <strong>Step 2:</strong> Copy the key secret displayed on the page, and paste it into the extension
+                </li>
+                <li class="list-group-item">
+                    <strong>Step 3:</strong> Scan the QR code in your authentication app on mobile</code>.
+                </li>
+                <li class="list-group-item">
+                    <strong>Step 4:</strong> Provide the code and the Pin and enable the TOTP
+                </li>
+            </ol>
+        </section>
+
+        <section id="broker2">
+            <h2 class="text-center mb-4">For Zerodha</h2>
+            <ol class="list-group list-group-numbered">
+                <li class="list-group-item">
+                    <strong>Step 1:</strong>
+                    <a href="https://support.zerodha.com/category/your-zerodha-account/login-credentials/login-credentials-of-trading-platforms/articles/time-based-otp-setup"
+                        target="_blank">Follow these steps to create a new TOTP</a> (If you have already enabled the
+                    TOTP, disable and create a new one)
+                </li>
+                <li class="list-group-item">
+                    <strong>Step 2:</strong> Copy the key secret from below the QR on the page, and paste it into the
+                    extension
+                </li>
+                <li class="list-group-item">
+                    <strong>Step 3:</strong> Scan the QR code in your authentication app on mobile</code>.
+                </li>
+                <li class="list-group-item">
+                    <strong>Step 4:</strong> Provide the code and the Password and enable the TOTP
+                </li>
+            </ol>
+        </section>
+
+        <!-- Footer Section -->
+        <footer class="text-center mt-5">
+            <p class="text-muted">Check out our homepage -> <a
+                    href="https://chromewebstore.google.com/detail/switchbro/dckekpecmbghmgeglmbakfmjnikphfjn">SwitchBro</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

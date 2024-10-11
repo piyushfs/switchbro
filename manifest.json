@@ -87,5 +87,15 @@
             },
             "description": "Switch account to one level below"
         }
-    }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "help.html"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
 }

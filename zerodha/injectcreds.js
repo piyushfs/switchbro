@@ -7,36 +7,33 @@ function sleep(ms) {
 function monitorSections() {
     const pwd = document.getElementById('password')
     const totp = document.getElementById('userid')
-    if (pwd && (ZERODHA_SECTIONINFO['pwd'])) {
+    if ((ZERODHA_SECTIONINFO['pwd']) && ZERODHA_SECTIONINFO['totp']) {
         return
     }
-    if (totp && (ZERODHA_SECTIONINFO['totp'])) {
-        return
-    }
-    chrome.runtime.sendMessage({ action: "shouldAutoLogin" }, function (response) {
-        const resp = response.data
-        console.log(resp, response)
-        if (resp && resp['enabled']) {
-            const userid = document.querySelector('.userid')
-            if (userid) {
-                const username = userid.innerHTML
-                if (pwd) {
-                    ZERODHA_SECTIONINFO['pwd'] = true
-                    automatePwd(username, pwd)
-                } else if (totp) {
-                    ZERODHA_SECTIONINFO['totp'] = true
-                    automateTotp(username, totp)
+    if (pwd || totp) {
+        chrome.runtime.sendMessage({ action: "shouldAutoLogin" }, function (response) {
+            const resp = response.data
+            console.log(resp, response)
+            if (resp && resp['enabled']) {
+                const userid = document.querySelector('.userid')
+                if (userid) {
+                    const username = userid.innerHTML
+                    if (pwd) {
+                        ZERODHA_SECTIONINFO['pwd'] = true
+                        automatePwd(username, pwd)
+                    } else if (totp) {
+                        ZERODHA_SECTIONINFO['totp'] = true
+                        automateTotp(username, totp)
+                    }
                 }
             }
-        }
-    })
+        })
+    }
 }
 
 
 function automateTotp(clientname, totpcomponent) {
     try {
-
-
         chrome.runtime.sendMessage({ action: "zerodhaCreds" }, async function (response) {
             console.log("Data from storage:", response, clientname);
             if (clientname in response.data) {

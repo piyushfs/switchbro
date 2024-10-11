@@ -7,30 +7,27 @@ function sleep(ms) {
 function monitorSections() {
     const totp = document.getElementById('confirm-otp-page')
     const pin = document.getElementById('verify-pin-page')
-
-    if (pin && (FYERS_SECTIONINFO['pin'])) {
+    if ((FYERS_SECTIONINFO['pin']) && FYERS_SECTIONINFO['totp']) {
         return
     }
-    if (totp && (FYERS_SECTIONINFO['totp'])) {
-        return
-    }
-    chrome.runtime.sendMessage({ action: "shouldAutoLogin" }, function (response) {
-        const resp = response.data
-        console.log(resp, response)
-        if (resp && resp['enabled']) {
-            const computedStyle = window.getComputedStyle(totp);
-            const displayValue = computedStyle.display;
-            const computedStylePin = window.getComputedStyle(pin);
-            const displayValuePin = computedStylePin.display;
-            if (displayValue === 'block') {
-                FYERS_SECTIONINFO['totp'] = true
-                automateTotp()
-            } else if (displayValuePin === 'block') {
-                FYERS_SECTIONINFO['pin'] = true
-                automatePin()
+    if (pin || totp) {
+        chrome.runtime.sendMessage({ action: "shouldAutoLogin" }, function (response) {
+            const resp = response.data
+            if (resp && resp['enabled']) {
+                const computedStyle = window.getComputedStyle(totp);
+                const displayValue = computedStyle.display;
+                const computedStylePin = window.getComputedStyle(pin);
+                const displayValuePin = computedStylePin.display;
+                if (displayValue === 'block') {
+                    FYERS_SECTIONINFO['totp'] = true
+                    automateTotp()
+                } else if (displayValuePin === 'block') {
+                    FYERS_SECTIONINFO['pin'] = true
+                    automatePin()
+                }
             }
-        }
-    })
+        })
+    }
 }
 
 

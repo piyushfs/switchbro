@@ -101,4 +101,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         document.getElementById('autologin').checked = true
     }
 
+
+    const helpelem = document.querySelectorAll('.help');
+    helpelem.forEach(element => {
+        element.addEventListener('click', function () {
+            chrome.tabs.create({ url: chrome.runtime.getURL('help.html') });
+        });
+    });
+
 });
