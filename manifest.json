@@ -1,8 +1,8 @@
 {
-    "name": "SwitchBro",
+    "name": "SwitchBro - Save Broker Logins",
     "manifest_version": 3,
-    "version": "1.0.2",
-    "description": "Let's you seamlessly switch between different accounts of a broker",
+    "version": "1.0.3",
+    "description": "Let's you seamlessly switch between different accounts of a broker. Now you can also save and login automatically to brokers.",
     "permissions": [
         "cookies",
         "storage",
